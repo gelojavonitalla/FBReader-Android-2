@@ -20,7 +20,7 @@ dependencies {
 	api project(':AmbilWarna')
 	api project(':zip-amse')
 
-	implementation 'com.android.support:support-v4:26.1.0'
+	implementation 'com.android.support:support-v4:27.1.1'
 	implementation ('com.googlecode.json-simple:json-simple:1.1.1') {
 		exclude group: 'junit', module: 'junit'
 	}
@@ -93,53 +93,57 @@ android {
 				versionCode 0
 			}
 		}
-		// arm { //obsolete
+		// // arm { //obsolete
+		// // 	dimension 'abi'
+		// // 	ndk {
+		// // 		abiFilter 'armeabi'
+		// // 		versionCode 1
+		// // 	}
+		// // }
+		// armv7a {
 		// 	dimension 'abi'
 		// 	ndk {
-		// 		abiFilter 'armeabi'
+		// 		abiFilter 'armeabi-v7a'
 		// 		versionCode 1
 		// 	}
 		// }
-		armv7a {
-			dimension 'abi'
-			ndk {
-				abiFilter 'armeabi-v7a'
-				versionCode 1
-			}
-		}
-		arm64v8a {
-			dimension 'abi'
-			ndk {
-				abiFilter 'arm64-v8a'
-				versionCode 2
-			}
-		}
-		x86 {
-			dimension 'abi'
-			ndk {
-				abiFilter 'x86'
-				versionCode 3
-			}
-		}
-		x8664 {
-			dimension 'abi'
-			ndk {
-				abiFilter 'x86_64'
-				versionCode 4
-			}
-		}
-		// mips { //obsolete
+		// arm64v8a {
 		// 	dimension 'abi'
 		// 	ndk {
-		// 		abiFilter 'mips'
+		// 		abiFilter 'arm64-v8a'
+		// 		versionCode 2
+		// 	}
+		// }
+		// x86 {
+		// 	dimension 'abi'
+		// 	ndk {
+		// 		abiFilter 'x86'
+		// 		versionCode 3
+		// 	}
+		// }
+		// x8664 {
+		// 	dimension 'abi'
+		// 	ndk {
+		// 		abiFilter 'x86_64'
 		// 		versionCode 4
 		// 	}
 		// }
+		// // mips { //obsolete
+		// // 	dimension 'abi'
+		// // 	ndk {
+		// // 		abiFilter 'mips'
+		// // 		versionCode 4
+		// // 	}
+		// // }
 	}
 
 	task ndkBuild(type: Exec) {
 		def ndkDir = project.android.ndkDirectory.absolutePath
-		commandLine "$ndkDir\\ndk-build.cmd", '-C', file('src/main/jni').absolutePath
+		if (org.gradle.internal.os.OperatingSystem.current().isWindows()) {
+			commandLine "$ndkDir\\ndk-build.cmd", '-C', file('src/main/jni').absolutePath
+		} else {
+			commandLine "$ndkDir/ndk-build", '-C', file('src/main/jni').absolutePath
+		}
 	}
 
 	tasks.withType(JavaCompile) {
